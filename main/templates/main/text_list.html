@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Тексты{% if tag %} — тег: {{ tag }}{% endif %} — Absheron</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px;max-width:900px}
+    .muted{color:#6b7280}
+    .tag{background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:999px;font-size:12px;margin-right:6px;white-space:nowrap}
+    .card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px}
+    .pager a, .pager span{margin-right:8px;text-decoration:none}
+    header a{color:#2563eb;text-decoration:none}
+  </style>
+</head>
+<body>
+  <header style="margin-bottom:16px">
+    <a href="/">← На главную</a>
+  </header>
+
+  <h1 style="margin:0 0 8px">Все тексты {% if tag %}<span class="muted">· тег: {{ tag }}</span>{% endif %}</h1>
+
+  {% if page_obj.object_list %}
+    {% for t in page_obj.object_list %}
+      <article class="card">
+        <h3 style="margin:0 0 6px">
+          <a href="{% url 'text_detail' t.id %}" style="text-decoration:none;color:#111827">{{ t.title }}</a>
+        </h3>
+        <div class="muted">Автор: {{ t.created_by.username }} · {{ t.created_at|date:"Y-m-d H:i" }}</div>
+        <p style="margin-top:8px">{{ t.body|striptags|truncatechars:280 }}</p>
+        {% if t.tags.all %}
+          <div style="margin-top:8px">
+            {% for tg in t.tags.all %}
+              <a class="tag" href="{% url 'text_list' %}?tag={{ tg.name|urlencode }}">{{ tg.name }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </article>
+    {% endfor %}
+
+    <nav class="pager" style="margin-top:16px">
+      {% if page_obj.has_previous %}
+        <a href="?{% if tag %}tag={{ tag|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo; Назад</a>
+      {% else %}
+        <span class="muted">&laquo; Назад</span>
+      {% endif %}
+
+      <span class="muted">Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?{% if tag %}tag={{ tag|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Вперёд &raquo;</a>
+      {% else %}
+        <span class="muted">Вперёд &raquo;</span>
+      {% endif %}
+    </nav>
+  {% else %}
+    <p class="muted">Пока нет текстов{% if tag %} с тегом «{{ tag }}»{% endif %}.</p>
+  {% endif %}
+</body>
+</html>
