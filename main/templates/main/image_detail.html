@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Изображение #{{ image.id }} — Absheron</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px;max-width:1000px}
+    .muted{color:#6b7280}
+    .tag{background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:999px;font-size:12px;margin-right:6px}
+    img{max-width:100%;height:auto;border-radius:8px}
+    header a{color:#2563eb;text-decoration:none}
+  </style>
+</head>
+<body>
+  <header style="margin-bottom:16px">
+    <a href="/">← На главную</a>
+  </header>
+
+  <h1 style="margin-bottom:8px">Изображение #{{ image.id }}</h1>
+  <div class="muted">Загрузил: {{ image.uploaded_by.username }} · {{ image.uploaded_at|date:"Y-m-d H:i" }}</div>
+
+  {% if image.tags.all %}
+    <div style="margin:10px 0">
+      {% for tag in image.tags.all %}<span class="tag">{{ tag.name }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
+  {% if image.file %}
+    <figure style="margin-top:16px">
+      <img src="{{ image.file.url }}" alt="image {{ image.id }}">
+      {% if image.description %}<figcaption class="muted" style="margin-top:8px">{{ image.description }}</figcaption>{% endif %}
+    </figure>
+  {% else %}
+    <p class="muted">Файл изображения отсутствует.</p>
+  {% endif %}
+
+  <hr style="margin:24px 0">
+  <section>
+    <h2 style="margin:0 0 8px">Комментарии (плейсхолдер)</h2>
+    <p class="muted">Здесь появится обсуждение к изображению.</p>
+  </section>
+</body>
+</html>
