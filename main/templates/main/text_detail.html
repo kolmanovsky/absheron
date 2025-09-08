@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>{{ text.title }} — Absheron</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px;max-width:900px}
+    .muted{color:#6b7280}
+    .tag{background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:999px;font-size:12px;margin-right:6px}
+    header a{color:#2563eb;text-decoration:none}
+  </style>
+</head>
+<body>
+  <header style="margin-bottom:16px">
+    <a href="/">← На главную</a>
+  </header>
+
+  <h1 style="margin-bottom:6px">{{ text.title }}</h1>
+  <div class="muted">Автор: {{ text.created_by.username }} · {{ text.created_at|date:"Y-m-d H:i" }}</div>
+
+  {% if text.tags.all %}
+    <div style="margin:10px 0">
+      {% for tag in text.tags.all %}<span class="tag">{{ tag.name }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
+  <article style="margin-top:16px;line-height:1.6">
+    {{ text.body|linebreaks }}
+  </article>
+
+  <hr style="margin:24px 0">
+  <section>
+    <h2 style="margin:0 0 8px">Комментарии (плейсхолдер)</h2>
+    <p class="muted">Здесь появится обсуждение к тексту.</p>
+  </section>
+</body>
+</html>
