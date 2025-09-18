@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Разделы — Absheron</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px;max-width:900px}
+  .card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px}
+  a{color:#2563eb;text-decoration:none}</style>
+</head>
+<body>
+  <h1>Разделы</h1>
+  {% if nodes %}
+    {% for n in nodes %}
+      <div class="card">
+        <h3 style="margin:0 0 6px"><a href="{{ n.get_absolute_url }}">{{ n.title }}</a></h3>
+        {% if n.description %}<p>{{ n.description }}</p>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Пока нет разделов.</p>
+  {% endif %}
+</body>
+</html>

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'main',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# базовая конфигурация панели инструментов
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": [
+            {"name": "basicstyles", "items": ["Bold", "Italic", "-", "RemoveFormat"]},
+            {"name": "paragraph", "items": ["NumberedList", "BulletedList", "-", "Outdent", "Indent"]},
+            {"name": "links", "items": ["Link", "Unlink"]},
+            {"name": "styles", "items": ["FontSize"]},
+            {"name": "colors", "items": ["TextColor", "BGColor"]},
+        ],
+        "removePlugins": "elementspath",
+        "resize_enabled": True,
+        "height": 300,
+    }
+}
+

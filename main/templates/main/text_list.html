@@ -27,7 +27,7 @@
           <a href="{% url 'text_detail' t.id %}" style="text-decoration:none;color:#111827">{{ t.title }}</a>
         </h3>
         <div class="muted">Автор: {{ t.created_by.username }} · {{ t.created_at|date:"Y-m-d H:i" }}</div>
-        <p style="margin-top:8px">{{ t.body|striptags|truncatechars:280 }}</p>
+        <p style="margin-top:8px">{{ t.body|safe|truncatechars:280 }}</p>
         {% if t.tags.all %}
           <div style="margin-top:8px">
             {% for tg in t.tags.all %}

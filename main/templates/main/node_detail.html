@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>{{ node.title }} — Absheron</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px;max-width:1100px}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+    .card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fff}
+    .thumb{width:100%;height:160px;object-fit:cover;border-radius:8px;background:#f3f4f6}
+    .muted{color:#6b7280}
+    a{color:#2563eb;text-decoration:none}
+    .crumbs a{margin-right:6px}
+  </style>
+</head>
+<body>
+  <div class="crumbs">
+    <a href="/">Главная</a> / <a href="/tree/">Разделы</a>
+    {% for slug in node.path_slugs %}
+      {% if not forloop.last %}
+        / <a href="/tree/{% for s in node.path_slugs|slice:":forloop.counter" %}{{ s }}/{% endfor %}">{{ node.path_slugs|slice:":forloop.counter"|last }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <h1 style="margin:8px 0">{{ node.title }}</h1>
+  {% if node.description %}<p class="muted">{{ node.description }}</p>{% endif %}
+
+  {% if children %}
+    <h2 style="margin-top:18px">Подразделы</h2>
+    <div class="grid">
+      {% for c in children %}
+        <div class="card">
+          <h3 style="margin:0 0 6px"><a href="{{ c.get_absolute_url }}">{{ c.title }}</a></h3>
+          {% if c.description %}<p>{{ c.description }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if texts %}
+    <h2 style="margin-top:18px">Тексты</h2>
+    <div class="grid">
+      {% for t in texts %}
+        <article class="card">
+          <h3 style="margin:0 0 6px"><a href="{% url 'text_detail' t.id %}" style="color:#111827">{{ t.title }}</a></h3>
+          <div class="muted">Автор: {{ t.created_by.username }} · {{ t.created_at|date:"Y-m-d H:i" }}</div>
+          <article>
+            {{ t.body|safe }}
+          </article>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if images %}
+    <h2 style="margin-top:18px">Изображения</h2>
+    <div class="grid">
+      {% for img in images %}
+        <div class="card">
+          <a href="{% url 'image_detail' img.id %}">
+            {% if img.file %}<img class="thumb" src="{{ img.file.url }}" alt="image {{ img.id }}">{% else %}<div class="thumb"></div>{% endif %}
+          </a>
+          <div class="muted" style="margin-top:8px">{{ img.uploaded_by.username }} · {{ img.uploaded_at|date:"Y-m-d H:i" }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</body>
+</html>
