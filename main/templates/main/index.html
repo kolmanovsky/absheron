@@ -1,100 +1,60 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Absheron — главная</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
-    header { margin-bottom: 24px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-    h1 { margin: 0; }
-    .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; background: #fff; }
-    .muted { color: #6b7280; font-size: 0.9rem; }
-    .tags { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag { background: #f3f4f6; color:#374151; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
-    .thumb { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; background:#f3f4f6; }
-    nav a { margin-right: 12px; text-decoration: none; color: #2563eb; }
-    .section-title { margin: 24px 0 12px; }
-    .ellipsis { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Absheron</h1>
-    <nav>
-      <a href="/admin/">Админка</a>
-      <a href="{% url 'text_list' %}" style="margin-left:12px">Все тексты</a>
-      <a href="{% url 'image_list' %}" style="margin-left:12px">Все изображения</a>
-      <a href="/tree/" style="margin-left:12px">Разделы</a>
-    </nav>
-  </header>
+{% extends "base.html" %}
 
-  <h2 class="section-title">Последние тексты</h2>
-  {% if latest_texts %}
-    <div class="grid">
-      {% for t in latest_texts %}
-        <article class="card">
-          <h3 style="margin:0 0 6px 0;">
-            <a href="{% url 'text_detail' t.id %}" style="text-decoration:none;color:#111827">
-              {{ t.title }}
-            </a>
-          </h3>
-          <div class="muted">
-            Автор: {{ t.created_by.username }} · {{ t.created_at|date:"Y-m-d H:i" }}
-          </div>
-          <p class="ellipsis" style="margin-top:8px;">{{ t.body|striptags }}</p>
-          {% if t.tags.all %}
-            <div class="tags">
-              {% for tag in t.tags.all %}
-                <span class="tag">{{ tag.name }}</span>
-              {% endfor %}
-            </div>
-          {% endif %}
-          <!-- Быстрая ссылка на правку в админке (удобно до появления своих detail-страниц) -->
-          <div style="margin-top:10px;">
-            <a href="{% url 'admin:core_text_change' t.id %}">Редактировать</a>
-          </div>
-        </article>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="muted">Пока нет текстов.</p>
-  {% endif %}
+{% block title %}Главная — Absheron{% endblock %}
 
-  <h2 class="section-title">Последние изображения</h2>
-  {% if latest_images %}
-    <div class="grid">
-      {% for img in latest_images %}
-        <div class="card">
-          <a href="{% url 'image_detail' img.id %}">
-            {% if img.file %}
-              <img class="thumb" src="{{ img.file.url }}" alt="image {{ img.id }}">
-            {% else %}
-              <div class="thumb"></div>
-            {% endif %}
-          </a>
-          <div class="muted" style="margin-top:8px;">
-            Загрузил: {{ img.uploaded_by.username }} · {{ img.uploaded_at|date:"Y-m-d H:i" }}
+{% block content %}
+<h1 style="margin:0 0 12px">Absheron</h1>
+
+<h2 class="section-title" style="margin:24px 0 12px">Последние тексты</h2>
+{% if latest_texts %}
+  <div class="grid" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+    {% for t in latest_texts %}
+      <article class="card">
+        <h3 style="margin:0 0 6px">
+          <a href="{% url 'text_detail' t.id %}" style="color:#111827">{{ t.title }}</a>
+        </h3>
+        <div class="muted">Автор: {{ t.created_by.username }} · {{ t.created_at|date:"Y-m-d H:i" }}</div>
+        <p class="ellipsis" style="margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">
+          {{ t.body|truncatechars_html:200|safe }}
+        </p>
+        {% if t.tags.all %}
+          <div class="tags" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+            {% for tg in t.tags.all %}
+              <a class="tag" href="{% url 'text_list' %}?tag={{ tg.name|urlencode }}" style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:999px;font-size:12px">{{ tg.name }}</a>
+            {% endfor %}
           </div>
-          {% if img.description %}
-            <p class="ellipsis" style="margin-top:8px;">{{ img.description }}</p>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">Пока нет текстов.</p>
+{% endif %}
+
+<h2 class="section-title" style="margin:24px 0 12px">Последние изображения</h2>
+{% if latest_images %}
+  <div class="grid" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+    {% for img in latest_images %}
+      <div class="card">
+        <a href="{% url 'image_detail' img.id %}">
+          {% if img.file %}
+            <img style="width:100%;height:160px;object-fit:cover;border-radius:8px;background:#f3f4f6" src="{{ img.file.url }}" alt="image {{ img.id }}">
+          {% else %}
+            <div style="width:100%;height:160px;border-radius:8px;background:#f3f4f6"></div>
           {% endif %}
-          {% if img.tags.all %}
-            <div class="tags">
-              {% for tag in img.tags.all %}
-                <span class="tag">{{ tag.name }}</span>
-              {% endfor %}
-            </div>
-          {% endif %}
-          <div style="margin-top:10px;">
-            <a href="{% url 'admin:core_image_change' img.id %}">Редактировать</a>
+        </a>
+        <div class="muted" style="margin-top:8px">{{ img.uploaded_by.username }} · {{ img.uploaded_at|date:"Y-m-d H:i" }}</div>
+        {% if img.tags.all %}
+          <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+            {% for tg in img.tags.all %}
+              <a class="tag" href="{% url 'image_list' %}?tag={{ tg.name|urlencode }}" style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:999px;font-size:12px">{{ tg.name }}</a>
+            {% endfor %}
           </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="muted">Пока нет изображений.</p>
-  {% endif %}
-</body>
-</html>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">Пока нет изображений.</p>
+{% endif %}
+{% endblock %}

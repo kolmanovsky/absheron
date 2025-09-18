@@ -6,12 +6,22 @@ from bleach.css_sanitizer import CSSSanitizer
 
 
 ALLOWED_TAGS = [
+    # базовые
     "p", "br", "span", "strong", "em", "ul", "ol", "li", "a",
+    # новые
+    "h1", "h2", "h3", "h4",
+    "blockquote",
+    "table", "thead", "tbody", "tr", "th", "td",
+    "u", "code", "pre",
 ]
+
 ALLOWED_ATTRS = {
     "a": {"href", "title", "target", "rel"},
     "span": {"style"},
+    "td": {"colspan", "rowspan", "align"},
+    "th": {"colspan", "rowspan", "align"},
 }
+
 ALLOWED_PROTOCOLS = {"http", "https", "mailto"}
 
 CSS_ALLOWED_PROPERTIES = [
